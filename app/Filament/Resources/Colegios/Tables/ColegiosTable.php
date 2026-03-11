@@ -32,6 +32,7 @@ class ColegiosTable
                 TextColumn::make('colegio')
                     ->default(fn (Colegio $record): string => Str::upper($record->nombre))
                     ->description(fn (Colegio $record): string => Str::upper($record->codigo), position: 'above')
+                    ->wrap()
                     ->hiddenFrom('md'),
                 TextColumn::make('codigo')
                     ->label('Código')

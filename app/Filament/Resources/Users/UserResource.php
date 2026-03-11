@@ -11,14 +11,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Fieldset;
@@ -46,13 +43,14 @@ class UserResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Configuración';
+    protected static string|UnitEnum|null $navigationGroup = 'Configuración';
 
     protected static ?int $navigationSort = 90;
 
     protected static ?string $modelLabel = 'usuario';
 
     protected static ?string $slug = 'usuarios';
+
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $globalSearchSort = 90;
@@ -133,99 +131,17 @@ class UserResource extends Resource
     {
         return $table
             ->recordTitleAttribute('name')
-            ->columns([
-                TextColumn::make('user')
-                    ->label(__('User'))
-                    ->default(fn (User $record): string => Str::ucwords($record->name))
-                    ->description(fn (User $record): string => Str::lower($record->email))
-                    ->wrap()
-                    ->icon(fn (User $record): Heroicon => match (self::getEstatus($record)) {
-                        'activo' => Heroicon::OutlinedShieldCheck,
-                        'inactivo' => Heroicon::OutlinedNoSymbol,
-                        default => Heroicon::OutlinedClock
-                    })
-                    ->iconColor(fn (User $record): string => match (self::getEstatus($record)) {
-                        'activo' => 'success',
-                        'inactivo' => 'danger',
-                        default => 'gray'
-                    })
-                    ->hiddenFrom('md'),
-                TextColumn::make('name')
-                    ->label(__('Name'))
-                    ->formatStateUsing(fn (string $state): string => Str::ucwords($state))
-                    ->searchable()
-                    ->visibleFrom('md'),
-                TextColumn::make('email')
-                    ->label(__('Email Address'))
-                    ->searchable()
-                    ->visibleFrom('md'),
-                IconColumn::make('estatus')
-                    ->label('Estatus')
-                    ->default(fn (User $record): string => self::getEstatus($record))
-                    ->icon(fn (string $state): Heroicon => match ($state) {
-                        'activo' => Heroicon::OutlinedShieldCheck,
-                        'inactivo' => Heroicon::OutlinedNoSymbol,
-                        default => Heroicon::OutlinedClock
-                    })
-                    ->color(fn (string $state): string => match ($state) {
-                        'activo' => 'success',
-                        'inactivo' => 'danger',
-                        default => 'gray'
-                    })
-                    ->alignCenter()
-                    ->visibleFrom('md'),
-                TextColumn::make('phone')
-                    ->label('Teléfono')
-                    ->searchable()
-                    ->alignCenter()
-                    ->visibleFrom('md'),
-                TextColumn::make('login_count')
-                    ->label('Visitas')
-                    ->icon(Heroicon::OutlinedFlag)
-                    ->numeric()
-                    ->alignCenter()
-                    ->visibleFrom('md'),
-                ToggleColumn::make('is_active')
-                    ->alignCenter()
-                    ->disabled(fn (User $record): bool => self::isDisabled($record))
-                    ->visibleFrom('md'),
-            ])
+            ->columns(self::columnsUser())
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
                 ActionGroup::make([
-                    Action::make('reset_password')
-                        ->label(__('Reset Password'))
-                        ->icon(Heroicon::OutlinedKey)
-                        ->schema([
-                            TextInput::make('new_password')
-                                ->label(__('New Password'))
-                                ->password()
-                                ->revealable()
-                                ->minLength(8)
-                                ->maxLength(15)
-                                ->required(),
-                        ])
-                        ->action(function (array $data, User $record): void {
-                            $record->password = Hash::make($data['new_password']);
-                            $record->save();
-                        })
-                        ->modalWidth(Width::ExtraSmall)
-                        ->hidden(fn (User $record): bool => self::isDisabled($record))
-                        ->disabled(fn (User $record): bool => self::isDisabled($record)),
-                    Action::make('validar_email')
-                        ->label('Verificar Email')
-                        ->icon(Heroicon::CheckCircle)
-                        ->action(function (User $record): void {
-                            $record->email_verified_at = now();
-                            $record->save();
-                        })
-                        ->requiresConfirmation()
-                        ->hidden(fn (User $record): bool => ! is_null($record->email_verified_at))
-                        ->disabled(fn (User $record): bool => self::isDisabled($record)),
+                    self::actionResetPassword(),
+                    self::actionValidarEmail(),
                     EditAction::make(),
                     DeleteAction::make(),
+                    RestoreAction::make(),
                 ]),
             ])
             ->toolbarActions([
@@ -234,7 +150,8 @@ class UserResource extends Resource
                         ->authorizeIndividualRecords('delete'),
                     ForceDeleteBulkAction::make()
                         ->authorizeIndividualRecords('forceDelete'),
-                    RestoreBulkAction::make(),
+                    RestoreBulkAction::make()
+                        ->authorizeIndividualRecords('restore'),
                 ]),
                 Action::make('actualizar')
                     ->icon(Heroicon::ArrowPath)
@@ -257,7 +174,7 @@ class UserResource extends Resource
             ]);
     }
 
-    protected static function getEstatus($record): string
+    public static function getEstatus($record): string
     {
         $validado = $record->email_verified_at ?? false;
         $response = 'default';
@@ -272,9 +189,106 @@ class UserResource extends Resource
         return $response;
     }
 
-    protected static function isDisabled($record): bool
+    public static function isDisabled($record): bool
     {
         return (auth()->id() == $record->id) || ! isAdmin() || $record->is_root;
     }
 
+    public static function columnsUser(): array
+    {
+        return [
+            TextColumn::make('user')
+                ->label(__('User'))
+                ->default(fn (User $record): string => Str::ucwords($record->name))
+                ->description(fn (User $record): string => Str::lower($record->email))
+                ->wrap()
+                ->icon(fn (User $record): Heroicon => match (self::getEstatus($record)) {
+                    'activo' => Heroicon::OutlinedShieldCheck,
+                    'inactivo' => Heroicon::OutlinedNoSymbol,
+                    default => Heroicon::OutlinedClock
+                })
+                ->iconColor(fn (User $record): string => match (self::getEstatus($record)) {
+                    'activo' => 'success',
+                    'inactivo' => 'danger',
+                    default => 'gray'
+                })
+                ->hiddenFrom('md'),
+            TextColumn::make('name')
+                ->label(__('Name'))
+                ->formatStateUsing(fn (string $state): string => Str::ucwords($state))
+                ->searchable()
+                ->visibleFrom('md'),
+            TextColumn::make('email')
+                ->label(__('Email Address'))
+                ->searchable()
+                ->visibleFrom('md'),
+            IconColumn::make('estatus')
+                ->label('Estatus')
+                ->default(fn (User $record): string => self::getEstatus($record))
+                ->icon(fn (string $state): Heroicon => match ($state) {
+                    'activo' => Heroicon::OutlinedShieldCheck,
+                    'inactivo' => Heroicon::OutlinedNoSymbol,
+                    default => Heroicon::OutlinedClock
+                })
+                ->color(fn (string $state): string => match ($state) {
+                    'activo' => 'success',
+                    'inactivo' => 'danger',
+                    default => 'gray'
+                })
+                ->alignCenter()
+                ->visibleFrom('md'),
+            TextColumn::make('phone')
+                ->label('Teléfono')
+                ->searchable()
+                ->alignCenter()
+                ->visibleFrom('md'),
+            TextColumn::make('login_count')
+                ->label('Visitas')
+                ->icon(Heroicon::OutlinedFlag)
+                ->numeric()
+                ->alignCenter()
+                ->visibleFrom('md'),
+            ToggleColumn::make('is_active')
+                ->alignCenter()
+                ->disabled(fn (User $record): bool => self::isDisabled($record))
+                ->visibleFrom('md'),
+        ];
+    }
+
+    public static function actionResetPassword()
+    {
+        return Action::make('reset-password')
+            ->label(__('Reset Password'))
+            ->icon(Heroicon::OutlinedKey)
+            ->schema([
+                TextInput::make('new_password')
+                    ->label(__('New Password'))
+                    ->password()
+                    ->revealable()
+                    ->minLength(8)
+                    ->maxLength(15)
+                    ->required(),
+            ])
+            ->action(function (array $data, User $record): void {
+                $record->password = Hash::make($data['new_password']);
+                $record->save();
+            })
+            ->modalWidth(Width::ExtraSmall)
+            ->hidden(fn (User $record): bool => self::isDisabled($record))
+            ->disabled(fn (User $record): bool => self::isDisabled($record));
+    }
+
+    public static function actionValidarEmail()
+    {
+        return Action::make('validar_email')
+            ->label('Verificar Email')
+            ->icon(Heroicon::CheckCircle)
+            ->action(function (User $record): void {
+                $record->email_verified_at = now();
+                $record->save();
+            })
+            ->requiresConfirmation()
+            ->hidden(fn (User $record): bool => ! is_null($record->email_verified_at))
+            ->disabled(fn (User $record): bool => self::isDisabled($record));
+    }
 }

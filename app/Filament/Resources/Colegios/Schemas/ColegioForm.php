@@ -26,6 +26,7 @@ class ColegioForm
                                 TextInput::make('codigo')
                                     ->label('Código')
                                     ->maxLength(50)
+                                    ->unique()
                                     ->required(),
                                 TextInput::make('nombre')
                                     ->maxLength(150)
@@ -38,6 +39,7 @@ class ColegioForm
                                     ->tel()
                                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
                             ])
+                            ->dense()
                             ->columns(3)
                             ->columnSpan(3),
                         Fieldset::make('Representante')
@@ -56,53 +58,57 @@ class ColegioForm
                                         'Masculino' => 'Masculino',
                                     ]),
                             ])
+                            ->dense()
                             ->columns(3)
                             ->columnSpan(3),
                     ])
                     ->compact()
                     ->collapsible()
-                    ->columnSpanFull()
-                    ->columns(3),
+                    ->columnSpanFull(),
                 Section::make('Datos Territoriales')
                     ->schema([
-                        Select::make('states_id')
-                            ->relationship('estado', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function (Set $set) {
-                                $set('municipalities_id', null);
-                                $set('parishes_id', null);
-                            }),
-                        Select::make('municipalities_id')
-                            ->relationship(
-                                'municipio',
-                                'name',
-                                fn (Builder $query, Get $get) => $query->where('state_id', $get('states_id'))
-                            )
-                            ->searchable()
-                            ->preload()
-                            ->required()
-                            ->live()
-                            ->afterStateUpdated(function (Set $set) {
-                                $set('parishes_id', null);
-                            }),
-                        Select::make('parishes_id')
-                            ->relationship(
-                                'parroquia',
-                                'name',
-                                fn (Builder $query, Get $get) => $query->where('municipality_id', $get('municipalities_id'))
-                            )
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-                        Textarea::make('direccion')
-                            ->label('Dirección')
-                            ->columnSpanFull(),
-                        TextInput::make('google_earth'),
+                        Fieldset::make()
+                            ->schema([
+                                Select::make('states_id')
+                                    ->relationship('estado', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set) {
+                                        $set('municipalities_id', null);
+                                        $set('parishes_id', null);
+                                    }),
+                                Select::make('municipalities_id')
+                                    ->relationship(
+                                        'municipio',
+                                        'name',
+                                        fn (Builder $query, Get $get) => $query->where('state_id', $get('states_id'))
+                                    )
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live()
+                                    ->afterStateUpdated(function (Set $set) {
+                                        $set('parishes_id', null);
+                                    }),
+                                Select::make('parishes_id')
+                                    ->relationship(
+                                        'parroquia',
+                                        'name',
+                                        fn (Builder $query, Get $get) => $query->where('municipality_id', $get('municipalities_id'))
+                                    )
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                                Textarea::make('direccion')
+                                    ->label('Dirección')
+                                    ->columnSpanFull(),
+                                TextInput::make('google_earth'),
+                            ])
+                            ->dense()
+                            ->columns(3),
                     ])
-                    ->columns(3)
                     ->compact()
                     ->collapsible()
                     ->columnSpanFull(),

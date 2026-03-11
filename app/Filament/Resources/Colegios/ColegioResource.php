@@ -6,6 +6,7 @@ use App\Filament\Resources\Colegios\Pages\CreateColegio;
 use App\Filament\Resources\Colegios\Pages\EditColegio;
 use App\Filament\Resources\Colegios\Pages\ListColegios;
 use App\Filament\Resources\Colegios\Pages\ViewColegio;
+use App\Filament\Resources\Colegios\RelationManagers\UsuariosRelationManager;
 use App\Filament\Resources\Colegios\Schemas\ColegioForm;
 use App\Filament\Resources\Colegios\Schemas\ColegioInfolist;
 use App\Filament\Resources\Colegios\Tables\ColegiosTable;
@@ -20,12 +21,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use UnitEnum;
 
 class ColegioResource extends Resource
 {
     protected static ?string $model = Colegio::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    protected static string | UnitEnum | null $navigationGroup = 'Liga de Talentos';
 
     protected static ?string $recordTitleAttribute = 'nombre';
 
@@ -65,8 +69,12 @@ class ColegioResource extends Resource
 
     public static function getRelations(): array
     {
+        // Verificamos si la ruta existe y si contiene ".edit"
+        if (str_contains(request()->route()?->getName() ?? '', '.edit')) {
+            return [];
+        }
         return [
-            //
+            UsuariosRelationManager::class,
         ];
     }
 

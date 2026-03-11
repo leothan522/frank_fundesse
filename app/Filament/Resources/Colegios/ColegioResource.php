@@ -1,0 +1,68 @@
+<?php
+
+namespace App\Filament\Resources\Colegios;
+
+use App\Filament\Resources\Colegios\Pages\CreateColegio;
+use App\Filament\Resources\Colegios\Pages\EditColegio;
+use App\Filament\Resources\Colegios\Pages\ListColegios;
+use App\Filament\Resources\Colegios\Pages\ViewColegio;
+use App\Filament\Resources\Colegios\Schemas\ColegioForm;
+use App\Filament\Resources\Colegios\Schemas\ColegioInfolist;
+use App\Filament\Resources\Colegios\Tables\ColegiosTable;
+use App\Models\Colegio;
+use BackedEnum;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+
+class ColegioResource extends Resource
+{
+    protected static ?string $model = Colegio::class;
+
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+
+    protected static ?string $recordTitleAttribute = 'nombre';
+
+    public static function form(Schema $schema): Schema
+    {
+        return ColegioForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return ColegioInfolist::configure($schema);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return ColegiosTable::configure($table);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => ListColegios::route('/'),
+            'create' => CreateColegio::route('/create'),
+            'view' => ViewColegio::route('/{record}'),
+            'edit' => EditColegio::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+    }
+}

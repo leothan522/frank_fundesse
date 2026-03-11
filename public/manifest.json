@@ -1,0 +1,38 @@
+{
+    "name": "Fundación Deportiva San Sebastían",
+    "short_name": "FUNDESSE",
+    "description": "Plataforma de registro deportivo para Fundación Deportiva San Sebastían",
+    "icons": [
+        {
+            "src": "favicons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "favicons/icon-192x192-maskable.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "favicons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "favicons/icon-512x512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "theme_color": "#0056b3",
+    "background_color": "#ffffff",
+    "display": "standalone",
+    "scope": "./",
+    "start_url": "./",
+    "orientation": "portrait-primary",
+    "lang": "es"
+}

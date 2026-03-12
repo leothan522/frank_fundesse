@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('google_earth')->nullable();
             $table->string('representante_nombre')->nullable();
             $table->string('representante_telefono')->nullable();
-            $table->string('representante_sexo')->nullable();
+            $table->enum('representante_sexo', ['femenino', 'masculino'])->nullable();
             $table->date('fecha_fundacion')->nullable();
             $table->string('telefono_local')->nullable();
             $table->foreign('states_id')->references('id')->on('states')->nullOnDelete();

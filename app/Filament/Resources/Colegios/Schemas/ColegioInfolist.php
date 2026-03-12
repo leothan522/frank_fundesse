@@ -68,7 +68,7 @@ class ColegioInfolist
                                     ->size(TextSize::Medium)
                                     ->copyable(),
                                 TextEntry::make('representante_sexo')
-                                    ->label('Sexo')
+                                    ->label('Género')
                                     ->placeholder('-')
                                     ->formatStateUsing(fn (string $state): string => Str::upper($state))
                                     ->color('primary')

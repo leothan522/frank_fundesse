@@ -133,7 +133,7 @@ class ColegiosTable
                         ->formatStateUsing(fn (string $state): string => Str::upper($state))
                         ->format(NumberFormat::FORMAT_TEXT),
                     Column::make('representante_sexo')
-                        ->heading('Sexo')
+                        ->heading('Género')
                         ->formatStateUsing(fn (string $state): string => Str::upper($state)),
                     Column::make('estado.name')
                         ->heading('Estado')

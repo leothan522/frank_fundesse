@@ -25,7 +25,6 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->foreign('deportes_id')->references('id')->on('deportes')->cascadeOnDelete();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

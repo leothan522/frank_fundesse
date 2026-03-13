@@ -31,6 +31,8 @@ class ColegioResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Liga de Talentos';
 
+    protected static ?int $navigationSort = 80;
+
     protected static ?string $recordTitleAttribute = 'nombre';
 
     public static function getGlobalSearchResultTitle(Model $record): string|Htmlable

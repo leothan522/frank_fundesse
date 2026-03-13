@@ -17,4 +17,9 @@ class Deporte extends Model
         return $this->hasMany(Modalidad::class, 'deportes_id', 'id');
     }
 
+    public function estudianteDeportes(): HasMany
+    {
+        return $this->hasMany(EstudianteDeporte::class, 'deportes_id', 'id');
+    }
+
 }

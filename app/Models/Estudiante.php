@@ -25,6 +25,7 @@ class Estudiante extends Model
         'sexo',
         'cedula',
         'representantes_id',
+        'direccion_representante',
         'estado',
         'municipio',
         'parroquia',

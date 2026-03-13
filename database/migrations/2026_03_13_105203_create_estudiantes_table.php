@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('sexo', ['femenino', 'masculino']);
             $table->string('cedula')->nullable();
             $table->unsignedBigInteger('representantes_id');
+            $table->boolean('direccion_representante')->default(true);
             // Ubicación Estudiante (Si es distinta al representante)
             $table->unsignedBigInteger('estado')->nullable();
             $table->unsignedBigInteger('municipio')->nullable();

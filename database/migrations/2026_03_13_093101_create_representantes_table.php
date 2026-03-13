@@ -18,10 +18,13 @@ return new class extends Migration
             $table->enum('sexo', ['femenino', 'masculino']);
             $table->string('telefono');
             $table->string('telefono_2')->nullable();
-            $table->unsignedBigInteger('estado')->nullable();
-            $table->unsignedBigInteger('municipio')->nullable();
-            $table->unsignedBigInteger('parroquia')->nullable();
+            $table->unsignedBigInteger('states_id')->nullable();
+            $table->unsignedBigInteger('municipalities_id')->nullable();
+            $table->unsignedBigInteger('parishes_id')->nullable();
             $table->text('direccion')->nullable();
+            $table->foreign('states_id')->references('id')->on('states')->nullOnDelete();
+            $table->foreign('municipalities_id')->references('id')->on('municipalities')->nullOnDelete();
+            $table->foreign('parishes_id')->references('id')->on('parishes')->nullOnDelete();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -51,4 +51,9 @@ class Colegio extends Model
         return $this->hasMany(User::class, 'colegios_id', 'id');
     }
 
+    public function estudiantes(): HasMany
+    {
+        return $this->hasMany(Estudiante::class, 'colegios_id', 'id');
+    }
+
 }

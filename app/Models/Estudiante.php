@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Rep98\Venezuela\Models\Municipality;
+use Rep98\Venezuela\Models\Parish;
+use Rep98\Venezuela\Models\State;
 
 class Estudiante extends Model
 {
@@ -26,9 +29,9 @@ class Estudiante extends Model
         'cedula',
         'representantes_id',
         'direccion_representante',
-        'estado',
-        'municipio',
-        'parroquia',
+        'states_id',
+        'municipalities_id',
+        'parishes_id',
         'direccion',
     ];
 
@@ -37,6 +40,11 @@ class Estudiante extends Model
         return Attribute::make(
             get: fn () => Carbon::parse($this->fecha_nacimiento)->age
         );
+    }
+
+    public function colegio(): BelongsTo
+    {
+        return $this->belongsTo(Colegio::class, 'colegios_id', 'id');
     }
 
     public function representante(): BelongsTo
@@ -57,6 +65,21 @@ class Estudiante extends Model
     public function deportes(): HasMany
     {
         return $this->hasMany(EstudianteDeporte::class, 'estudiantes_id', 'id');
+    }
+
+    public function estado(): BelongsTo
+    {
+        return $this->belongsTo(State::class, 'states_id', 'id');
+    }
+
+    public function municipio(): BelongsTo
+    {
+        return $this->belongsTo(Municipality::class, 'municipalities_id', 'id');
+    }
+
+    public function parroquia(): BelongsTo
+    {
+        return $this->belongsTo(Parish::class, 'parishes_id', 'id');
     }
 
 }

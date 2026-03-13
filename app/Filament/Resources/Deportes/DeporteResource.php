@@ -26,9 +26,9 @@ class DeporteResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Liga de Talentos';
+    protected static string|UnitEnum|null $navigationGroup = 'Liga de Talentos';
 
-    protected static ?int $navigationSort = 81;
+    protected static ?int $navigationSort = 82;
 
     protected static ?string $recordTitleAttribute = 'nombre';
 

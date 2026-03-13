@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Colegios\Schemas;
 
+use App\Filament\Resources\Customs\InputForm;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -68,44 +69,7 @@ class ColegioForm
                 Section::make('Datos Territoriales')
                     ->schema([
                         Fieldset::make()
-                            ->schema([
-                                Select::make('states_id')
-                                    ->relationship('estado', 'name')
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function (Set $set) {
-                                        $set('municipalities_id', null);
-                                        $set('parishes_id', null);
-                                    }),
-                                Select::make('municipalities_id')
-                                    ->relationship(
-                                        'municipio',
-                                        'name',
-                                        fn (Builder $query, Get $get) => $query->where('state_id', $get('states_id'))
-                                    )
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->live()
-                                    ->afterStateUpdated(function (Set $set) {
-                                        $set('parishes_id', null);
-                                    }),
-                                Select::make('parishes_id')
-                                    ->relationship(
-                                        'parroquia',
-                                        'name',
-                                        fn (Builder $query, Get $get) => $query->where('municipality_id', $get('municipalities_id'))
-                                    )
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                                Textarea::make('direccion')
-                                    ->label('Dirección')
-                                    ->columnSpanFull(),
-                                TextInput::make('google_earth'),
-                            ])
+                            ->schema(InputForm::datosDireccion(true))
                             ->dense()
                             ->columns(3),
                     ])

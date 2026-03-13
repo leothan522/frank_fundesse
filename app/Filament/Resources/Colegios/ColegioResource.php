@@ -29,7 +29,7 @@ class ColegioResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Liga de Talentos';
+    protected static string|UnitEnum|null $navigationGroup = 'Liga de Talentos';
 
     protected static ?int $navigationSort = 80;
 
@@ -75,6 +75,7 @@ class ColegioResource extends Resource
         if (str_contains(request()->route()?->getName() ?? '', '.edit')) {
             return [];
         }
+
         return [
             UsuariosRelationManager::class,
         ];

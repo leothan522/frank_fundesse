@@ -15,8 +15,11 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 class EstudianteResource extends Resource
@@ -30,6 +33,24 @@ class EstudianteResource extends Resource
     protected static ?int $navigationSort = 81;
 
     protected static ?string $recordTitleAttribute = 'full_name';
+
+    public static function getGlobalSearchResultTitle(Model $record): string|Htmlable
+    {
+        return Str::upper($record->full_name);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['cedula', 'full_name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Cédula' => formatoMillares($record->cedula, 0),
+            'Colegio' => Str::upper($record->colegio->nombre),
+        ];
+    }
 
     public static function form(Schema $schema): Schema
     {

@@ -9,7 +9,7 @@ use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Support\Icons\Heroicon;
@@ -18,6 +18,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
@@ -93,13 +94,33 @@ class EstudiantesTable
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
+                    RestoreAction::make()
+                        ->before(function (Estudiante $record) {
+                            $cedula = Str::replace('*', '', $record->cedula);
+                            $record->update(['cedula' => $cedula]);
+                        }),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->before(function (Collection $records) {
+                            foreach ($records as $record) {
+                                // Como el registro ya fue "eliminado" (Soft Delete o Delete)
+                                // necesitamos asegurarnos de que la instancia aún permita el update
+                                $cedula = '*'.$record->cedula;
+                                $record->update(['cedula' => $cedula]);
+                            }
+                        })
+                        ->authorizeIndividualRecords('delete'),
+                    RestoreBulkAction::make()
+                        ->before(function (Collection $records) {
+                            foreach ($records as $record) {
+                                $cedula = Str::replace('*', '', $record->cedula);
+                                $record->update(['cedula' => $cedula]);
+                            }
+                        })
+                        ->authorizeIndividualRecords('restore'),
                 ]),
                 self::actionExportExcel(),
                 Action::make('actualizar')

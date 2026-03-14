@@ -37,7 +37,7 @@ class EstudiantePolicy
      */
     public function update(User $user, Estudiante $estudiante): bool
     {
-        return isAdmin() || $user->colegios_id;
+        return (isAdmin() || $user->colegios_id) && empty($estudiante->deleted_at);
     }
 
     /**

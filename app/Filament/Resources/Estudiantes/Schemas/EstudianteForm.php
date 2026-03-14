@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class EstudianteForm
@@ -56,8 +57,12 @@ class EstudianteForm
                                     ->inline(false)
                                     ->required()
                                     ->live(),
-                                Select::make('deportes') // Este nombre debe coincidir con el método en el modelo
-                                    ->relationship('deportes', 'nombre') // 'nombre' es la columna de la tabla deportes a mostrar
+                                Select::make('deportes')
+                                    ->relationship(
+                                        'deportes',
+                                        'nombre',
+                                        fn (Builder $query) => $query->where('is_active', true)
+                                    )
                                     ->multiple()
                                     ->preload()
                                     ->searchable()

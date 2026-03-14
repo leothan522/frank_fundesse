@@ -27,6 +27,8 @@ class ModalidadesRelationManager extends RelationManager
 {
     protected static string $relationship = 'modalidades';
 
+    protected static bool $isLazy = false;
+
     public function isReadOnly(): bool
     {
         return false;

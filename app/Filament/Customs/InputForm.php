@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\Customs;
+namespace App\Filament\Customs;
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;

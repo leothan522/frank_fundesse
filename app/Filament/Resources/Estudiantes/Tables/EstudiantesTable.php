@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources\Estudiantes\Tables;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class EstudiantesTable
 {
@@ -19,55 +22,45 @@ class EstudiantesTable
     {
         return $table
             ->columns([
-                TextColumn::make('colegios_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('nombres')
-                    ->searchable(),
-                TextColumn::make('apellidos')
-                    ->searchable(),
                 TextColumn::make('full_name')
+                    ->label('Nombre Completo')
+                    ->formatStateUsing(fn (string $state): string => Str::upper($state))
+                    ->wrap()
                     ->searchable(),
                 TextColumn::make('fecha_nacimiento')
+                    ->label('Nacimiento')
                     ->date()
-                    ->sortable(),
+                    ->searchable()
+                    ->alignCenter()
+                    ->visibleFrom('md'),
+                TextColumn::make('edad')
+                    ->numeric()
+                    ->searchable()
+                    ->alignCenter(),
                 TextColumn::make('sexo')
-                    ->badge(),
+                    ->badge()
+                    ->alignCenter()
+                    ->visibleFrom('md'),
                 TextColumn::make('cedula')
-                    ->searchable(),
-                TextColumn::make('representantes_id')
+                    ->label('Cédula')
                     ->numeric()
-                    ->sortable(),
-                IconColumn::make('direccion_representante')
-                    ->boolean(),
-                TextColumn::make('estado')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('municipio')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('parroquia')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->alignCenter()
+                    ->searchable()
+                    ->visibleFrom('md'),
+                TextColumn::make('colegio.nombre')
+                    ->formatStateUsing(fn (string $state): string => Str::upper($state))
+                    ->wrap()
+                    ->visible(isAdmin())
+                    ->visibleFrom('lg'),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -75,6 +68,9 @@ class EstudiantesTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
+                Action::make('actualizar')
+                    ->icon(Heroicon::ArrowPath)
+                    ->iconButton(),
             ]);
     }
 }

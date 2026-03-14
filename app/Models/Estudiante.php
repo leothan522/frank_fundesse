@@ -35,10 +35,12 @@ class Estudiante extends Model
         'direccion',
     ];
 
-    protected function age()
+    public function edad(): Attribute
     {
         return Attribute::make(
-            get: fn () => Carbon::parse($this->fecha_nacimiento)->age
+            get: fn () => $this->fecha_nacimiento
+                ? Carbon::parse($this->fecha_nacimiento)->age
+                : null
         );
     }
 

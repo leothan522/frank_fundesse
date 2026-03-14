@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\Estudiantes\Schemas;
 
-use App\Filament\Resources\Customs\InputForm;
+use App\Filament\Customs\InputForm;
 use App\Models\Colegio;
+use App\Models\Representante;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -46,13 +47,16 @@ class EstudianteForm
                                     ->required(),
                                 Select::make('representantes_id')
                                     ->relationship('representante', 'nombre')
+                                    ->getOptionLabelFromRecordUsing(fn (Representante $record) => Str::upper(formatoMillares($record->cedula, 0).' '.$record->nombre))
                                     ->preload()
-                                    ->searchable()
+                                    ->searchable(['cedula', 'nombre'])
                                     ->required()
                                     ->createOptionForm([
                                         Section::make('Datos Básicos')
                                             ->schema([
                                                 TextInput::make('cedula')
+                                                    ->numeric()
+                                                    ->minValue(1)
                                                     ->unique()
                                                     ->required(),
                                                 TextInput::make('nombre')

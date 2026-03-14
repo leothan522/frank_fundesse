@@ -49,7 +49,7 @@ class ColegioForm
                                     ->tel()
                                     ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
                                 Select::make('representante_sexo')
-                                    ->label('Género')
+                                    ->label('Sexo')
                                     ->options([
                                         'femenino' => 'Femenino',
                                         'masculino' => 'Masculino',

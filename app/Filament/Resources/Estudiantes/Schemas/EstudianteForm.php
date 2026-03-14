@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Estudiantes\Schemas;
 use App\Filament\Customs\InputForm;
 use App\Models\Colegio;
 use App\Models\Representante;
+use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -27,9 +28,9 @@ class EstudianteForm
                             ->schema([
                                 Select::make('colegios_id')
                                     ->relationship('colegio', 'nombre')
-                                    ->getOptionLabelFromRecordUsing(fn (Colegio $record) => Str::upper($record->nombre))
+                                    ->getOptionLabelFromRecordUsing(fn (Colegio $record) => Str::upper($record->codigo.' '.$record->nombre))
                                     ->preload()
-                                    ->searchable()
+                                    ->searchable(['codigo', 'nombre'])
                                     ->required()
                                     ->columnSpanFull()
                                     ->default(auth()->user()->colegios_id)
@@ -39,7 +40,8 @@ class EstudianteForm
                                 TextInput::make('apellidos')
                                     ->required(),
                                 TextInput::make('cedula')
-                                    ->label('Cédula'),
+                                    ->label('C.I. / Cédula estudiantil')
+                                    ->unique(),
                                 DatePicker::make('fecha_nacimiento')
                                     ->required(),
                                 Select::make('sexo')
@@ -51,45 +53,22 @@ class EstudianteForm
                                     ->preload()
                                     ->searchable(['cedula', 'nombre'])
                                     ->required()
-                                    ->createOptionForm([
-                                        Section::make('Datos Básicos')
-                                            ->schema([
-                                                TextInput::make('cedula')
-                                                    ->numeric()
-                                                    ->minValue(1)
-                                                    ->unique()
-                                                    ->required(),
-                                                TextInput::make('nombre')
-                                                    ->required()
-                                                    ->columnSpan(2),
-                                                Select::make('sexo')
-                                                    ->options(['femenino' => 'Femenino', 'masculino' => 'Masculino'])
-                                                    ->required(),
-                                                TextInput::make('telefono')
-                                                    ->label('Teléfono')
-                                                    ->tel()
-                                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
-                                                    ->required(),
-                                                TextInput::make('telefono_2')
-                                                    ->label('Teléfono secundario')
-                                                    ->tel()
-                                                    ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
-                                            ])
-                                            ->compact()
-                                            ->columns(3)
-                                            ->collapsible(),
-                                        Section::make('Dirección Habitación')
-                                            ->schema(InputForm::datosDireccion())
-                                            ->compact()
-                                            ->columns(3)
-                                            ->collapsible(),
-                                    ]),
+                                    ->createOptionForm(self::formRepresentante())
+                                    ->createOptionAction(fn (Action $action) => $action->modalHeading('Nuevo Representante'))
+                                    ->editOptionForm(self::formRepresentante())
+                                    ->editOptionAction(fn (Action $action) => $action->modalHeading('Editar Representante')),
                                 Toggle::make('direccion_representante')
                                     ->label('¿Vive con representante?  ')
                                     ->default(true)
                                     ->inline(false)
                                     ->required()
                                     ->live(),
+                                Select::make('deportes') // Este nombre debe coincidir con el método en el modelo
+                                    ->relationship('deportes', 'nombre') // 'nombre' es la columna de la tabla deportes a mostrar
+                                    ->multiple()
+                                    ->preload()
+                                    ->searchable()
+                                    ->required(),
                             ])
                             ->columns(),
                     ])
@@ -107,5 +86,42 @@ class EstudianteForm
                     ->columnSpanFull()
                     ->visible(fn (Get $get): bool => ! $get('direccion_representante')),
             ]);
+    }
+
+    protected static function formRepresentante(): array
+    {
+        return [
+            Section::make('Datos Básicos')
+                ->schema([
+                    TextInput::make('cedula')
+                        ->numeric()
+                        ->minValue(1)
+                        ->unique()
+                        ->required(),
+                    TextInput::make('nombre')
+                        ->required()
+                        ->columnSpan(2),
+                    Select::make('sexo')
+                        ->options(['femenino' => 'Femenino', 'masculino' => 'Masculino'])
+                        ->required(),
+                    TextInput::make('telefono')
+                        ->label('Teléfono')
+                        ->tel()
+                        ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
+                        ->required(),
+                    TextInput::make('telefono_2')
+                        ->label('Teléfono secundario')
+                        ->tel()
+                        ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/'),
+                ])
+                ->compact()
+                ->columns(3)
+                ->collapsible(),
+            Section::make('Dirección Habitación')
+                ->schema(InputForm::datosDireccion())
+                ->compact()
+                ->columns(3)
+                ->collapsible(),
+        ];
     }
 }

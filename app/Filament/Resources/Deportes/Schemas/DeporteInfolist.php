@@ -25,10 +25,10 @@ class DeporteInfolist
                             ->dense()
                             ->schema([
                                 TextEntry::make('nombre')
-                                    ->formatStateUsing(fn (string $state): string => Str::ucwords($state))
-                                    ->color('primary')
+                                    ->badge()
+                                    ->color(fn (Deporte $record): string => $record->is_active ? 'success' : 'danger')
+                                    ->size(TextSize::Large)
                                     ->weight(FontWeight::Bold)
-                                    ->size(TextSize::Medium)
                                     ->copyable(),
                                 IconEntry::make('is_active')
                                     ->label('Activo')

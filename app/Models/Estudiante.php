@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -64,9 +65,14 @@ class Estudiante extends Model
         return $this->hasOne(EstudianteFisico::class, 'estudiantes_id', 'id')->latestOfMany('fecha');
     }
 
-    public function deportes(): HasMany
+    public function deportes(): BelongsToMany
     {
-        return $this->hasMany(EstudianteDeporte::class, 'estudiantes_id', 'id');
+        return $this->belongsToMany(
+            Deporte::class,           // 1. El modelo con el que se relaciona
+            'estudiantes_deportes',   // 2. La tabla pivote real
+            'estudiantes_id',         // 3. FK de Estudiante en la pivote
+            'deportes_id'             // 4. FK de Deporte en la pivote
+        );
     }
 
     public function estado(): BelongsTo

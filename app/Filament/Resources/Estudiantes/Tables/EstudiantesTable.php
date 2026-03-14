@@ -42,15 +42,23 @@ class EstudiantesTable
                     ->alignCenter()
                     ->visibleFrom('md'),
                 TextColumn::make('cedula')
-                    ->label('Cédula')
+                    ->label('C.I. / Cédula E.')
                     ->numeric()
                     ->alignCenter()
                     ->searchable()
                     ->visibleFrom('md'),
-                TextColumn::make('colegio.nombre')
-                    ->formatStateUsing(fn (string $state): string => Str::upper($state))
+                TextColumn::make('deportes.nombre')
+                    ->badge()
+                    ->searchable()
+                    ->color('success')
                     ->wrap()
+                    ->alignCenter()
+                    ->visibleFrom('md'),
+                TextColumn::make('colegio.codigo')
+                    ->label('COD. Colegio')
+                    ->formatStateUsing(fn (string $state): string => Str::upper($state))
                     ->visible(isAdmin())
+                    ->alignCenter()
                     ->visibleFrom('lg'),
             ])
             ->filters([

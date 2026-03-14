@@ -17,6 +17,6 @@ class EstudianteDeporte extends Model
 
     public function deporte(): BelongsTo
     {
-        return $this->belongsTo(Deporte::class, 'estudiantes_id', 'id');
+        return $this->belongsTo(Deporte::class, 'deportes_id', 'id');
     }
 }

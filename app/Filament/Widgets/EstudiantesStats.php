@@ -10,6 +10,7 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class EstudiantesStats extends StatsOverviewWidget
 {
+    protected static bool $isLazy = false;
     public static function canView(): bool
     {
         return isAdmin() || auth()->user()->has('colegio');
@@ -26,12 +27,12 @@ class EstudiantesStats extends StatsOverviewWidget
 
             Stat::make('Masculinos', $this->getMasculinos())
                 ->description('Estudiantes varones')
-                ->descriptionIcon('heroicon-m-user', IconPosition::Before)
+                ->descriptionIcon(Heroicon::OutlinedUser, IconPosition::Before)
                 ->color('info'),
 
             Stat::make('Femeninas', $this->getFemeninas())
                 ->description('Estudiantes hembras')
-                ->descriptionIcon('heroicon-m-user', IconPosition::Before)
+                ->descriptionIcon(Heroicon::OutlinedUser, IconPosition::Before)
                 ->color('success'),
         ];
     }

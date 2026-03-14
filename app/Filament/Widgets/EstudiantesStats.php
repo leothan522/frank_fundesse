@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Estudiantes\EstudianteResource;
 use App\Models\Estudiante;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Icons\Heroicon;
@@ -11,6 +12,9 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class EstudiantesStats extends StatsOverviewWidget
 {
     protected static bool $isLazy = false;
+
+    protected static ?int $sort = 3;
+
     public static function canView(): bool
     {
         return isAdmin() || auth()->user()->has('colegio');
@@ -23,17 +27,20 @@ class EstudiantesStats extends StatsOverviewWidget
                 ->description('Registrados en el sistema')
                 ->descriptionIcon(Heroicon::OutlinedUserGroup, IconPosition::Before)
                 ->chart([7, 3, 4, 5, 6, 3, 5, 10]) // Opcional: una línea de tendencia
-                ->color('primary'),
+                ->color('primary')
+                ->url(EstudianteResource::getUrl('index')),
 
             Stat::make('Masculinos', $this->getMasculinos())
                 ->description('Estudiantes varones')
                 ->descriptionIcon(Heroicon::OutlinedUser, IconPosition::Before)
-                ->color('info'),
+                ->color('info')
+                ->url(EstudianteResource::getUrl('index').'?filters[sexo][value]=masculino'),
 
             Stat::make('Femeninas', $this->getFemeninas())
                 ->description('Estudiantes hembras')
                 ->descriptionIcon(Heroicon::OutlinedUser, IconPosition::Before)
-                ->color('success'),
+                ->color('success')
+                ->url(EstudianteResource::getUrl('index').'?filters[sexo][value]=femenino'),
         ];
     }
 

@@ -10,6 +10,11 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class EstudiantesStats extends StatsOverviewWidget
 {
+    public static function canView(): bool
+    {
+        return isAdmin() || auth()->user()->has('colegio');
+    }
+
     protected function getStats(): array
     {
         return [

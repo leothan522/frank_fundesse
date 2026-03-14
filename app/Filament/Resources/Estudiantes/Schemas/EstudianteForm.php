@@ -7,6 +7,7 @@ use App\Models\Colegio;
 use App\Models\Representante;
 use Filament\Actions\Action;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -26,15 +27,7 @@ class EstudianteForm
                     ->schema([
                         Fieldset::make()
                             ->schema([
-                                Select::make('colegios_id')
-                                    ->relationship('colegio', 'nombre')
-                                    ->getOptionLabelFromRecordUsing(fn (Colegio $record) => Str::upper($record->codigo.' '.$record->nombre))
-                                    ->preload()
-                                    ->searchable(['codigo', 'nombre'])
-                                    ->required()
-                                    ->columnSpanFull()
-                                    ->default(auth()->user()->colegios_id)
-                                    ->visible(isAdmin()),
+                                self::inputColegiosId(),
                                 TextInput::make('nombres')
                                     ->required(),
                                 TextInput::make('apellidos')
@@ -123,5 +116,23 @@ class EstudianteForm
                 ->columns(3)
                 ->collapsible(),
         ];
+    }
+
+    protected static function inputColegiosId()
+    {
+        if (isAdmin()) {
+            return Select::make('colegios_id')
+                ->relationship('colegio', 'nombre')
+                ->getOptionLabelFromRecordUsing(fn (Colegio $record) => Str::upper($record->codigo.' '.$record->nombre))
+                ->preload()
+                ->searchable(['codigo', 'nombre'])
+                ->required()
+                ->columnSpanFull()
+                ->default(auth()->user()->colegios_id)
+                ->visible(isAdmin());
+        } else {
+            return Hidden::make('colegios_id')
+                ->default(auth()->user()->colegios_id);
+        }
     }
 }

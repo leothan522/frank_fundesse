@@ -17,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use pxlrbt\FilamentExcel\Actions\ExportBulkAction;
@@ -28,6 +29,7 @@ class EstudiantesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => ! isAdmin() ? $query->where('colegios_id', auth()->user()->colegios_id) : $query)
             ->columns([
                 TextColumn::make('full_name')
                     ->label('Nombre Completo')

@@ -1,6 +1,6 @@
 <?php
 
-namespace Rep98\Venezuela\Database\Seeders;
+namespace Database\Seeders;
 
 use Rep98\Venezuela\Models\State;
 use Illuminate\Database\Seeder;

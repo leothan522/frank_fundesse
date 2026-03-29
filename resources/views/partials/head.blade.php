@@ -6,7 +6,7 @@
 </title>
 
 <meta name="description" content="Plataforma de registro deportivo para Fundación Deportiva San Sebastían">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#0056b3">
 
 <meta property="og:title" content="FUNDESSE">
 <meta property="og:description" content="Plataforma de registro deportivo para Fundación Deportiva San Sebastían">

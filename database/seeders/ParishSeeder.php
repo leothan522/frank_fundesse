@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Rep98\Venezuela\Models\State;
-use Rep98\Venezuela\Models\Municipality;
-use Rep98\Venezuela\Models\Parish;
+use App\Models\Municipality;
+use App\Models\Parish;
+use App\Models\State;
 use Illuminate\Database\Seeder;
 
 class ParishSeeder extends Seeder

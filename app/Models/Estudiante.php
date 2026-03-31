@@ -10,9 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rep98\Venezuela\Models\Municipality;
-use Rep98\Venezuela\Models\Parish;
-use Rep98\Venezuela\Models\State;
 
 class Estudiante extends Model
 {

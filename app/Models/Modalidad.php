@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Modalidad extends Model
 {
     protected $table = 'deportes_modalidades';
+
     protected $fillable = [
         'deportes_id',
         'nombre',
@@ -26,5 +26,4 @@ class Modalidad extends Model
     {
         return $this->belongsTo(Deporte::class, 'deportes_id', 'id');
     }
-
 }

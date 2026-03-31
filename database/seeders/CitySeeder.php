@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\City;
+use App\Models\State;
 use Illuminate\Database\Seeder;
-use Rep98\Venezuela\Models\City;
-use Rep98\Venezuela\Models\State;
 
 class CitySeeder extends Seeder
 {

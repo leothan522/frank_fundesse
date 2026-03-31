@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5de4564ea7b6b1774da13944eb18940c",
+    "content-hash": "c1cc9061afa953d9d72d45eff3277d04",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7729,78 +7729,6 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.2"
             },
             "time": "2025-12-14T04:43:48+00:00"
-        },
-        {
-            "name": "rep98/laravel-venezuela",
-            "version": "v1.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/REP98/laravel-venezuela.git",
-                "reference": "a53f39653e7401176b4829c8b7312b7b12b4581d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/REP98/laravel-venezuela/zipball/a53f39653e7401176b4829c8b7312b7b12b4581d",
-                "reference": "a53f39653e7401176b4829c8b7312b7b12b4581d",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/database": "^10.0|^11.0|^12.0",
-                "illuminate/filesystem": "^10.0|^11.0|^12.0",
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^9.0|^10.0",
-                "phpunit/phpunit": "^9.4|^10.1|^11.5|^12"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Rep98\\Venezuela\\DPTServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Rep98\\Venezuela\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Robert Pérez",
-                    "email": "delfinmundo@gmail.com",
-                    "homepage": "https://rep98.vzlaweb.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Modelo de datos Geográficos de Venezuela",
-            "homepage": "https://github.com/REP98/laravel-venezuela",
-            "keywords": [
-                "Municipios",
-                "communities",
-                "comunidades",
-                "distribución",
-                "estados",
-                "geografía",
-                "laravel",
-                "municipalities",
-                "parishes",
-                "parroquias",
-                "rep98",
-                "states",
-                "venezuela",
-                "vzla"
-            ],
-            "support": {
-                "issues": "https://github.com/REP98/laravel-venezuela/issues",
-                "source": "https://github.com/REP98/laravel-venezuela/tree/v1.0.3"
-            },
-            "time": "2025-02-09T13:29:23+00:00"
         },
         {
             "name": "scrivo/highlight.php",

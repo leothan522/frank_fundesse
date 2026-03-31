@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Rep98\Venezuela\Models\Municipality;
-use Rep98\Venezuela\Models\Parish;
-use Rep98\Venezuela\Models\State;
 
 class Colegio extends Model
 {
